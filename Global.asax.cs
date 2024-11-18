@@ -9,6 +9,11 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
+using MOCDIntegrations.App_Start;
+using Microsoft.Owin;
+using Owin;
+
+[assembly: OwinStartup(typeof(MOCDIntegrations.App_Start.AuthConfig))]
 
 namespace MOCDIntegrations
 {
@@ -22,7 +27,7 @@ namespace MOCDIntegrations
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalFilters.Filters.Add(new CustomJsonFilter());
-
+            GlobalConfiguration.Configuration.Filters.Add(new AuthenticationFilterAttribute());
         }
     }
 }
