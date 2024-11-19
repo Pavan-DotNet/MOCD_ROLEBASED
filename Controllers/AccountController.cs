@@ -24,7 +24,14 @@ namespace MOCDIntegrations.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.ReturnUrl = returnUrl;
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                ViewBag.ReturnUrl = returnUrl;
+            }
+            else
+            {
+                ViewBag.ReturnUrl = Url.Action("Index", "Home");
+            }
             return View();
         }
 
