@@ -4,6 +4,7 @@ using MOCDIntegrations.Auth;
 using Microsoft.Owin.Security;
 using System.Web;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace MOCDIntegrations.Controllers
 {
@@ -24,7 +25,14 @@ namespace MOCDIntegrations.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            
+            // Limit the length of returnUrl to prevent issues with long URLs
+            if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Length > 200)
+            {
+                returnUrl = returnUrl.Substring(0, 200);
+            }
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) && !returnUrl.StartsWith("/Account/Login"))
             {
                 ViewBag.ReturnUrl = returnUrl;
             }
@@ -32,12 +40,6 @@ namespace MOCDIntegrations.Controllers
             {
                 ViewBag.ReturnUrl = Url.Action("Index", "Home");
             }
-            return View();
-        }
-
-        [HttpGet]
-        public ActionResult SessionExpired()
-        {
             return View();
         }
 
@@ -62,7 +64,26 @@ namespace MOCDIntegrations.Controllers
             var authenticationManager = HttpContext.GetOwinContext().Authentication;
             authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = model.RememberMe }, identity);
 
-            return RedirectToLocal(returnUrl);
+            // Limit the length of returnUrl to prevent issues with long URLs
+            if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Length > 200)
+            {
+                returnUrl = returnUrl.Substring(0, 200);
+            }
+
+            if (Url.IsLocalUrl(returnUrl) && !returnUrl.StartsWith("/Account/Login"))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult SessionExpired()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -85,15 +106,6 @@ namespace MOCDIntegrations.Controllers
             ViewBag.UserRole = userRole;
 
             return View();
-        }
-
-        private ActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
