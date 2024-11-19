@@ -43,5 +43,19 @@
     @RenderSection("scripts", required: false)
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/maskedtextbox.js"></script>
+    <script>
+        // Check session status every minute
+        setInterval(function() {
+            $.ajax({
+                url: '@Url.Action("CheckSessionStatus", "Account")',
+                type: 'GET',
+                success: function(result) {
+                    if (!result.isAuthenticated) {
+                        window.location.href = '@Url.Action("SessionExpired", "Account")';
+                    }
+                }
+            });
+        }, 60000);
+    </script>
 </body>
 </html>

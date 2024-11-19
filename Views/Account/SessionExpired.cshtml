@@ -1,0 +1,13 @@
+
+@{
+    ViewBag.Title = "Session Expired";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <p>Your session has expired. Please log in again.</p>
+        @Html.ActionLink("Log in", "Login", "Account", null, new { @class = "btn btn-primary" })
+    </div>
+</div>

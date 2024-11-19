@@ -19,8 +19,8 @@ namespace MOCDIntegrations.App_Start
             {
                 AuthenticationType = "ApplicationCookie",
                 LoginPath = new PathString("/Account/Login"),
-                ExpireTimeSpan = TimeSpan.FromMinutes(30),
-                SlidingExpiration = true
+                ExpireTimeSpan = TimeSpan.FromMinutes(15),
+                SlidingExpiration = false
             });
 
             // Use a cookie to temporarily store information about a user logging in with a third party login provider
